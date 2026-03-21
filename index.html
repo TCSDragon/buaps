@@ -18,8 +18,7 @@
 
   <section
     class="hero hero-image"
-    style="background-image: url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1600&q=80');"
-  >
+    style="background-image: url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1600&q=80');">
     <h2>Quality Used Cars at Great Prices</h2>
     <p>Browse our inventory and find your next vehicle today</p>
     <a class="btn btn-primary" href="inventory.html">View Inventory</a>
@@ -27,31 +26,8 @@
 
   <section class="section">
     <h3>Featured Vehicles</h3>
-    <div class="inventory-grid" id="featuredCars">
-      <div class="car-card">
-        <img
-          src="https://images.unsplash.com/photo-1549399542-7e82138f1f1c?auto=format&fit=crop&w=800&q=80"
-          alt="2020 Honda Accord"
-        />
-        <div class="car-body">
-          <h4 class="car-title">2020 Honda Accord</h4>
-          <p class="car-meta">45,000 miles</p>
-          <div class="price">$21,900</div>
-        </div>
-      </div>
-
-      <div class="car-card">
-        <img
-          src="https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=800&q=80"
-          alt="2019 Toyota Camry"
-        />
-        <div class="car-body">
-          <h4 class="car-title">2019 Toyota Camry</h4>
-          <p class="car-meta">52,000 miles</p>
-          <div class="price">$19,800</div>
-        </div>
-      </div>
-    </div>
+    <div class="status" id="featuredStatus">Loading featured vehicles...</div>
+    <div class="inventory-grid" id="featuredCars"></div>
   </section>
 
   <section class="cta">
@@ -63,5 +39,172 @@
   <footer>
     <p>© 2026 BUAPS Auto Sales | McAllen, TX</p>
   </footer>
+
+  <script>
+    const SHEET_CSV_URL = "PASTE_YOUR_GOOGLE_SHEET_CSV_URL_HERE";
+    const MAX_FEATURED = 3;
+
+    function parseCSVLine(line) {
+      const result = [];
+      let current = "";
+      let inQuotes = false;
+
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        const nextChar = line[i + 1];
+
+        if (char === '"' && inQuotes && nextChar === '"') {
+          current += '"';
+          i++;
+        } else if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === "," && !inQuotes) {
+          result.push(current);
+          current = "";
+        } else {
+          current += char;
+        }
+      }
+
+      result.push(current);
+      return result;
+    }
+
+    function csvToObjects(csvText) {
+      const lines = csvText
+        .trim()
+        .split(/\r?\n/)
+        .filter(line => line.trim() !== "");
+
+      if (lines.length < 2) return [];
+
+      const headers = parseCSVLine(lines[0]).map(h => h.trim());
+
+      return lines.slice(1).map(line => {
+        const values = parseCSVLine(line);
+        const row = {};
+
+        headers.forEach((header, index) => {
+          row[header] = (values[index] || "").trim();
+        });
+
+        return row;
+      });
+    }
+
+    function formatPrice(value) {
+      const number = Number(String(value).replace(/[^0-9.-]/g, ""));
+      if (Number.isNaN(number)) return value || "Call for price";
+      return "$" + number.toLocaleString();
+    }
+
+    function formatMileage(value) {
+      const number = Number(String(value).replace(/[^0-9.-]/g, ""));
+      if (Number.isNaN(number)) return value || "Mileage unavailable";
+      return number.toLocaleString() + " miles";
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function isAvailable(car) {
+      return (car.status || "").trim().toLowerCase() === "available";
+    }
+
+    function isFeatured(car) {
+      return (car.featured || "").trim().toLowerCase() === "yes";
+    }
+
+    function renderFeaturedCars(cars) {
+      const status = document.getElementById("featuredStatus");
+      const container = document.getElementById("featuredCars");
+
+      const featuredCars = cars
+        .filter(car => isAvailable(car) && isFeatured(car))
+        .slice(0, MAX_FEATURED);
+
+      if (featuredCars.length === 0) {
+        status.textContent = "No featured vehicles selected.";
+        container.innerHTML = `
+          <div class="empty">
+            No vehicles are currently marked as featured in the spreadsheet.
+          </div>
+        `;
+        return;
+      }
+
+      status.textContent = "";
+
+      container.innerHTML = featuredCars.map(car => {
+        const stock = encodeURIComponent(car.stock || "");
+        const title = `${car.year || ""} ${car.make || ""} ${car.model || ""} ${car.trim || ""}`.trim();
+        const image = car.photo1 || "https://via.placeholder.com/800x500?text=No+Photo";
+
+        return `
+          <article class="car-card">
+            <img src="${escapeHtml(image)}" alt="${escapeHtml(title)}">
+            <div class="car-body">
+              <h4 class="car-title">${escapeHtml(title)}</h4>
+              <p class="car-meta">${escapeHtml(formatMileage(car.mileage || ""))}</p>
+              <div class="price">${escapeHtml(formatPrice(car.price || ""))}</div>
+              <div class="btn-row">
+                <a class="btn btn-primary" href="vehicle.html?stock=${stock}">View Details</a>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    async function loadFeaturedCars() {
+      const status = document.getElementById("featuredStatus");
+      const container = document.getElementById("featuredCars");
+
+      if (!SHEET_CSV_URL || SHEET_CSV_URL.includes("PASTE_YOUR_GOOGLE_SHEET_CSV_URL_HERE")) {
+        status.textContent = "Spreadsheet URL not configured yet.";
+        container.innerHTML = `
+          <div class="error">
+            Edit <strong>index.html</strong> and replace
+            <strong>PASTE_YOUR_GOOGLE_SHEET_CSV_URL_HERE</strong> with your published Google Sheets CSV link.
+          </div>
+        `;
+        return;
+      }
+
+      try {
+        const response = await fetch(SHEET_CSV_URL, { cache: "no-store" });
+
+        if (!response.ok) {
+          throw new Error("HTTP " + response.status);
+        }
+
+        const csvText = await response.text();
+        const cars = csvToObjects(csvText);
+        renderFeaturedCars(cars);
+      } catch (error) {
+        status.textContent = "Could not load featured vehicles.";
+        container.innerHTML = `
+          <div class="error">
+            Failed to load featured vehicles.<br><br>
+            Check that:
+            <ul>
+              <li>the Google Sheet is published to the web,</li>
+              <li>the CSV link is correct, and</li>
+              <li>the spreadsheet contains a <strong>featured</strong> column.</li>
+            </ul>
+            <strong>Error:</strong> ${escapeHtml(error.message)}
+          </div>
+        `;
+      }
+    }
+
+    loadFeaturedCars();
+  </script>
 </body>
 </html>
