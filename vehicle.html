@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Vehicle Details | BUAPS Auto Sales</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f6f8;
+      color: #222;
+    }
+
+    header {
+      background: #111;
+      color: #fff;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 15px;
+      font-size: 14px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 20px 50px;
+    }
+
+    .status,
+    .error,
+    .empty {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
+
+    .vehicle-layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    .main-panel,
+    .side-panel,
+    .section-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    .main-image-wrap {
+      background: #ddd;
+    }
+
+    .main-image {
+      width: 100%;
+      height: 500px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .thumb-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+      gap: 10px;
+      padding: 15px;
+      background: #fff;
+    }
+
+    .thumb {
+      border: 2px solid transparent;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      background: #eee;
+      padding: 0;
+    }
+
+    .thumb.active {
+      border-color: #ff4d00;
+    }
+
+    .thumb img {
+      width: 100%;
+      height: 80px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .vehicle-summary {
+      padding: 20px;
+      border-top: 1px solid #eee;
+    }
+
+    .vehicle-title {
+      margin: 0 0 10px;
+      font-size: 32px;
+      line-height: 1.2;
+    }
+
+    .price {
+      font-size: 34px;
+      font-weight: bold;
+      color: #111;
+      margin-bottom: 10px;
+    }
+
+    .summary-meta {
+      color: #555;
+      font-size: 16px;
+      margin: 0 0 6px;
+    }
+
+    .side-panel {
+      padding: 20px;
+      position: sticky;
+      top: 20px;
+    }
+
+    .side-panel h2 {
+      margin-top: 0;
+      font-size: 24px;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 15px;
+    }
+
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+
+    .detail-label {
+      color: #666;
+    }
+
+    .detail-value {
+      font-weight: bold;
+      text-align: right;
+    }
+
+    .btn-group {
+      margin-top: 22px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 13px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      text-align: center;
+      font-size: 15px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: #ff4d00;
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #111;
+      color: white;
+    }
+
+    .btn-light {
+      background: #f1f1f1;
+      color: #111;
+    }
+
+    .section-card {
+      margin-top: 24px;
+      padding: 20px;
+    }
+
+    .section-card h3 {
+      margin-top: 0;
+      font-size: 22px;
+    }
+
+    .description {
+      line-height: 1.7;
+      color: #444;
+      white-space: pre-line;
+    }
+
+    .feature-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      padding: 0;
+      list-style: none;
+      margin: 0;
+    }
+
+    .feature-list li {
+      background: #f8f8f8;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 14px;
+    }
+
+    footer {
+      background: #222;
+      color: #aaa;
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+      margin-top: 30px;
+    }
+
+    @media (max-width: 900px) {
+      .vehicle-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .side-panel {
+        position: static;
+      }
+
+      .main-image {
+        height: 320px;
+      }
+
+      .vehicle-title {
+        font-size: 26px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>BUAPS Auto Sales</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="inventory.html">Inventory</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div id="pageContent">
+      <div class="status">Loading vehicle details...</div>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2026 BUAPS Auto Sales | McAllen, TX</p>
+  </footer>
+
+  <script>
+    // Use the same published Google Sheets CSV URL as inventory.html
+    const SHEET_CSV_URL = "PASTE_YOUR_GOOGLE_SHEET_CSV_URL_HERE";
+
+    // Customize these
+    const DEALER_PHONE_DISPLAY = "(956) 555-1234";
+    const DEALER_PHONE_LINK = "19565551234";
+    const DEALER_EMAIL = "sales@example.com";
+
+    function parseCSVLine(line) {
+      const result = [];
+      let current = "";
+      let inQuotes = false;
+
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        const nextChar = line[i + 1];
+
+        if (char === '"' && inQuotes && nextChar === '"') {
+          current += '"';
+          i++;
+        } else if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === "," && !inQuotes) {
+          result.push(current);
+          current = "";
+        } else {
+          current += char;
+        }
+      }
+
+      result.push(current);
+      return result;
+    }
+
+    function csvToObjects(csvText) {
+      const lines = csvText
+        .trim()
+        .split(/\r?\n/)
+        .filter(line => line.trim() !== "");
+
+      if (lines.length < 2) return [];
+
+      const headers = parseCSVLine(lines[0]).map(h => h.trim());
+
+      return lines.slice(1).map(line => {
+        const values = parseCSVLine(line);
+        const row = {};
+
+        headers.forEach((header, index) => {
+          row[header] = (values[index] || "").trim();
+        });
+
+        return row;
+      });
+    }
+
+    function formatPrice(value) {
+      const number = Number(String(value).replace(/[^0-9.-]/g, ""));
+      if (Number.isNaN(number)) return value || "Call for price";
+      return "$" + number.toLocaleString();
+    }
+
+    function formatMileage(value) {
+      const number = Number(String(value).replace(/[^0-9.-]/g, ""));
+      if (Number.isNaN(number)) return value || "N/A";
+      return number.toLocaleString() + " miles";
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function getQueryParam(name) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(name);
+    }
+
+    function collectPhotos(car) {
+      const possiblePhotoFields = [
+        "photo1", "photo2", "photo3", "photo4", "photo5",
+        "photo6", "photo7", "photo8", "photo9", "photo10"
+      ];
+
+      return possiblePhotoFields
+        .map(field => car[field])
+        .filter(value => value && value.trim() !== "");
+    }
+
+    function collectFeatures(car) {
+      // Option 1: separate columns feature1, feature2, feature3...
+      const featureFields = [
+        "feature1", "feature2", "feature3", "feature4", "feature5",
+        "feature6", "feature7", "feature8", "feature9", "feature10"
+      ];
+
+      const fieldFeatures = featureFields
+        .map(field => car[field])
+        .filter(value => value && value.trim() !== "");
+
+      if (fieldFeatures.length > 0) return fieldFeatures;
+
+      // Option 2: one "features" column separated by |
+      if (car.features && car.features.trim() !== "") {
+        return car.features
+          .split("|")
+          .map(item => item.trim())
+          .filter(Boolean);
+      }
+
+      return [];
+    }
+
+    function renderVehicle(car) {
+      const container = document.getElementById("pageContent");
+
+      const title = `${car.year || ""} ${car.make || ""} ${car.model || ""} ${car.trim || ""}`.trim();
+      const photos = collectPhotos(car);
+      const mainPhoto = photos[0] || "https://via.placeholder.com/1200x700?text=No+Photo";
+      const features = collectFeatures(car);
+
+      const description = car.description || "Contact us for more information about this vehicle.";
+
+      const details = [
+        ["Price", formatPrice(car.price)],
+        ["Mileage", formatMileage(car.mileage)],
+        ["Stock #", car.stock || "N/A"],
+        ["VIN", car.vin || "N/A"],
+        ["Exterior", car.exterior || "N/A"],
+        ["Interior", car.interior || "N/A"],
+        ["Transmission", car.transmission || "N/A"],
+        ["Drivetrain", car.drivetrain || "N/A"],
+        ["Fuel", car.fuel || "N/A"]
+      ];
+
+      container.innerHTML = `
+        <div class="vehicle-layout">
+          <section>
+            <div class="main-panel">
+              <div class="main-image-wrap">
+                <img id="mainVehicleImage" class="main-image" src="${escapeHtml(mainPhoto)}" alt="${escapeHtml(title)}">
+              </div>
+
+              ${
+                photos.length > 1
+                  ? `
+                    <div class="thumb-grid">
+                      ${photos.map((photo, index) => `
+                        <button class="thumb ${index === 0 ? "active" : ""}" data-photo="${escapeHtml(photo)}" type="button">
+                          <img src="${escapeHtml(photo)}" alt="Vehicle photo ${index + 1}">
+                        </button>
+                      `).join("")}
+                    </div>
+                  `
+                  : ""
+              }
+
+              <div class="vehicle-summary">
+                <h1 class="vehicle-title">${escapeHtml(title)}</h1>
+                <div class="price">${escapeHtml(formatPrice(car.price))}</div>
+                <p class="summary-meta">${escapeHtml(formatMileage(car.mileage))}</p>
+                <p class="summary-meta">Stock #: ${escapeHtml(car.stock || "N/A")}</p>
+              </div>
+            </div>
+
+            <div class="section-card">
+              <h3>Vehicle Description</h3>
+              <div class="description">${escapeHtml(description)}</div>
+            </div>
+
+            ${
+              features.length > 0
+                ? `
+                  <div class="section-card">
+                    <h3>Features</h3>
+                    <ul class="feature-list">
+                      ${features.map(feature => `<li>${escapeHtml(feature)}</li>`).join("")}
+                    </ul>
+                  </div>
+                `
+                : ""
+            }
+          </section>
+
+          <aside class="side-panel">
+            <h2>Vehicle Details</h2>
+            ${details.map(([label, value]) => `
+              <div class="detail-row">
+                <div class="detail-label">${escapeHtml(label)}</div>
+                <div class="detail-value">${escapeHtml(value)}</div>
+              </div>
+            `).join("")}
+
+            <div class="btn-group">
+              <a class="btn btn-primary" href="tel:${DEALER_PHONE_LINK}">Call ${escapeHtml(DEALER_PHONE_DISPLAY)}</a>
+              <a class="btn btn-secondary" href="mailto:${escapeHtml(DEALER_EMAIL)}?subject=${encodeURIComponent("Question about stock #" + (car.stock || ""))}">
+                Email About This Car
+              </a>
+              <a class="btn btn-light" href="inventory.html">Back to Inventory</a>
+            </div>
+          </aside>
+        </div>
+      `;
+
+      document.title = `${title} | BUAPS Auto Sales`;
+
+      const thumbButtons = document.querySelectorAll(".thumb");
+      const mainImage = document.getElementById("mainVehicleImage");
+
+      thumbButtons.forEach(button => {
+        button.addEventListener("click", () => {
+          thumbButtons.forEach(btn => btn.classList.remove("active"));
+          button.classList.add("active");
+          mainImage.src = button.dataset.photo;
+        });
+      });
+    }
+
+    function renderError(message) {
+      document.getElementById("pageContent").innerHTML = `
+        <div class="error">
+          ${message}
+        </div>
+      `;
+    }
+
+    async function loadVehicle() {
+      const stock = getQueryParam("stock");
+
+      if (!stock) {
+        renderError(`
+          No vehicle was specified.<br><br>
+          Open this page using a URL like:<br>
+          <strong>vehicle.html?stock=101</strong>
+        `);
+        return;
+      }
+
+      if (!SHEET_CSV_URL || SHEET_CSV_URL.includes("PASTE_YOUR_GOOGLE_SHEET_CSV_URL_HERE")) {
+        renderError(`
+          Spreadsheet URL not configured yet.<br><br>
+          Edit <strong>vehicle.html</strong> and replace
+          <strong>PASTE_YOUR_GOOGLE_SHEET_CSV_URL_HERE</strong> with your published Google Sheets CSV link.
+        `);
+        return;
+      }
+
+      try {
+        const response = await fetch(SHEET_CSV_URL, { cache: "no-store" });
+
+        if (!response.ok) {
+          throw new Error("HTTP " + response.status);
+        }
+
+        const csvText = await response.text();
+        const cars = csvToObjects(csvText);
+
+        const car = cars.find(row => String(row.stock).trim() === String(stock).trim());
+
+        if (!car) {
+          renderError(`
+            Vehicle not found for stock #: <strong>${escapeHtml(stock)}</strong><br><br>
+            Please return to <a href="inventory.html">Inventory</a>.
+          `);
+          return;
+        }
+
+        renderVehicle(car);
+      } catch (error) {
+        renderError(`
+          Failed to load vehicle details.<br><br>
+          Check that:
+          <ul>
+            <li>the Google Sheet is published to the web,</li>
+            <li>the CSV link is correct, and</li>
+            <li>the stock number exists in the spreadsheet.</li>
+          </ul>
+          <strong>Error:</strong> ${escapeHtml(error.message)}
+        `);
+      }
+    }
+
+    loadVehicle();
+  </script>
+</body>
+</html>
