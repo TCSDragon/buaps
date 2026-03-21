@@ -31,7 +31,6 @@
   </footer>
 
   <script>
-    // REPLACE THIS with your published Google Sheets CSV URL
     const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVjMR24cnpLKfIc-7bEV5tyBjNKY8zmr8ONxEj1C4RhMFzvcMWNQorZ2uwSSNnpxQ9akTWGKeA7_8V/pub?gid=0&single=true&output=csv";
 
     function parseCSVLine(line) {
@@ -94,6 +93,15 @@
       return number.toLocaleString() + " miles";
     }
 
+    function escapeHtml(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
     function renderInventory(cars) {
       const container = document.getElementById("inventoryContainer");
       const statusMessage = document.getElementById("statusMessage");
@@ -123,12 +131,12 @@
 
         return `
           <article class="car-card">
-            <img src="${image}" alt="${title}">
+            <img src="${escapeHtml(image)}" alt="${escapeHtml(title)}">
             <div class="car-body">
-              <h3 class="car-title">${title}</h3>
-              <p class="car-meta">${formatMileage(car.mileage || "")}</p>
-              <p class="car-meta">Stock #: ${car.stock || "N/A"}</p>
-              <div class="price">${formatPrice(car.price || "")}</div>
+              <h3 class="car-title">${escapeHtml(title)}</h3>
+              <p class="car-meta">${escapeHtml(formatMileage(car.mileage || ""))}</p>
+              <p class="car-meta">Stock #: ${escapeHtml(car.stock || "N/A")}</p>
+              <div class="price">${escapeHtml(formatPrice(car.price || ""))}</div>
               <div class="btn-row">
                 <a class="btn btn-primary" href="vehicle.html?stock=${stock}">View Details</a>
                 <a class="btn btn-secondary" href="tel:19565551234">Call Dealer</a>
@@ -177,7 +185,7 @@
               <li>the CSV link is correct, and</li>
               <li>the spreadsheet headers match the expected column names.</li>
             </ul>
-            <strong>Error:</strong> ${error.message}
+            <strong>Error:</strong> ${escapeHtml(error.message)}
           </div>
         `;
       }
