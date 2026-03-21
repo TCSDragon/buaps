@@ -18,7 +18,7 @@
 
   <main class="container">
     <div id="pageContent">
-      <div class="status">Loading vehicle details...</div>
+      <div class="status-box">Loading vehicle details...</div>
     </div>
   </main>
 
@@ -27,10 +27,7 @@
   </footer>
 
   <script>
-    // Use the same published Google Sheets CSV URL as inventory.html
     const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVjMR24cnpLKfIc-7bEV5tyBjNKY8zmr8ONxEj1C4RhMFzvcMWNQorZ2uwSSNnpxQ9akTWGKeA7_8V/pub?gid=0&single=true&output=csv";
-
-    // Customize these
     const DEALER_PHONE_DISPLAY = "(956) 555-1234";
     const DEALER_PHONE_LINK = "19565551234";
     const DEALER_EMAIL = "sales@example.com";
@@ -121,7 +118,6 @@
     }
 
     function collectFeatures(car) {
-      // Option 1: separate columns feature1, feature2, feature3...
       const featureFields = [
         "feature1", "feature2", "feature3", "feature4", "feature5",
         "feature6", "feature7", "feature8", "feature9", "feature10"
@@ -133,7 +129,6 @@
 
       if (fieldFeatures.length > 0) return fieldFeatures;
 
-      // Option 2: one "features" column separated by |
       if (car.features && car.features.trim() !== "") {
         return car.features
           .split("|")
@@ -151,7 +146,6 @@
       const photos = collectPhotos(car);
       const mainPhoto = photos[0] || "https://via.placeholder.com/1200x700?text=No+Photo";
       const features = collectFeatures(car);
-
       const description = car.description || "Contact us for more information about this vehicle.";
 
       const details = [
@@ -226,9 +220,7 @@
 
             <div class="btn-group">
               <a class="btn btn-primary" href="tel:${DEALER_PHONE_LINK}">Call ${escapeHtml(DEALER_PHONE_DISPLAY)}</a>
-              <a class="btn btn-secondary" href="mailto:${escapeHtml(DEALER_EMAIL)}?subject=${encodeURIComponent("Question about stock #" + (car.stock || ""))}">
-                Email About This Car
-              </a>
+              <a class="btn btn-secondary" href="mailto:${escapeHtml(DEALER_EMAIL)}?subject=${encodeURIComponent("Question about stock #" + (car.stock || ""))}">Email About This Car</a>
               <a class="btn btn-light" href="inventory.html">Back to Inventory</a>
             </div>
           </aside>
