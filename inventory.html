@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Inventory | BUAPS Auto Sales</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f6f8;
+      color: #222;
+    }
+
+    header {
+      background: #111;
+      color: #fff;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 15px;
+      font-size: 14px;
+    }
+
+    .hero {
+      background: #1b1b1b;
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .hero h2 {
+      margin: 0 0 10px;
+      font-size: 32px;
+    }
+
+    .hero p {
+      margin: 0;
+      color: #ddd;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 20px 50px;
+    }
+
+    .status {
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .inventory-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 22px;
+    }
+
+    .car-card {
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .car-card img {
+      width: 100%;
+      height: 210px;
+      object-fit: cover;
+      background: #ddd;
+    }
+
+    .car-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .car-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .car-meta {
+      color: #555;
+      font-size: 15px;
+      margin: 0;
+    }
+
+    .price {
+      font-size: 24px;
+      font-weight: bold;
+      color: #111;
+      margin-top: 4px;
+    }
+
+    .btn-row {
+      margin-top: auto;
+      padding-top: 8px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 14px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background: #ff4d00;
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #111;
+      color: white;
+    }
+
+    .empty,
+    .error {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    footer {
+      background: #222;
+      color: #aaa;
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+      .hero h2 {
+        font-size: 26px;
+      }
+
+      nav a {
+        margin-left: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>BUAPS Auto Sales</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="inventory.html">Inventory</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h2>Current Inventory</h2>
+    <p>Browse our available vehicles below</p>
+  </section>
+
+  <main class="container">
+    <div class="status" id="statusMessage">Loading inventory...</div>
+    <div id="inventoryContainer" class="inventory-grid"></div>
+  </main>
+
+  <footer>
+    <p>© 2026 BUAPS Auto Sales | McAllen, TX</p>
+  </footer>
+
+  <script>
+    // REPLACE THIS with your published Google Sheets CSV URL
+    const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVjMR24cnpLKfIc-7bEV5tyBjNKY8zmr8ONxEj1C4RhMFzvcMWNQorZ2uwSSNnpxQ9akTWGKeA7_8V/pub?gid=0&single=true&output=csv";
+
+    function parseCSVLine(line) {
+      const result = [];
+      let current = "";
+      let inQuotes = false;
+
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        const nextChar = line[i + 1];
+
+        if (char === '"' && inQuotes && nextChar === '"') {
+          current += '"';
+          i++;
+        } else if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === "," && !inQuotes) {
+          result.push(current);
+          current = "";
+        } else {
+          current += char;
+        }
+      }
+
+      result.push(current);
+      return result;
+    }
+
+    function csvToObjects(csvText) {
+      const lines = csvText
+        .trim()
+        .split(/\r?\n/)
+        .filter(line => line.trim() !== "");
+
+      if (lines.length < 2) return [];
+
+      const headers = parseCSVLine(lines[0]).map(h => h.trim());
+
+      return lines.slice(1).map(line => {
+        const values = parseCSVLine(line);
+        const row = {};
+
+        headers.forEach((header, index) => {
+          row[header] = (values[index] || "").trim();
+        });
+
+        return row;
+      });
+    }
+
+    function formatPrice(value) {
+      const number = Number(String(value).replace(/[^0-9.-]/g, ""));
+      if (Number.isNaN(number)) return value;
+      return "$" + number.toLocaleString();
+    }
+
+    function formatMileage(value) {
+      const number = Number(String(value).replace(/[^0-9.-]/g, ""));
+      if (Number.isNaN(number)) return value;
+      return number.toLocaleString() + " miles";
+    }
+
+    function renderInventory(cars) {
+      const container = document.getElementById("inventoryContainer");
+      const statusMessage = document.getElementById("statusMessage");
+
+      const availableCars = cars.filter(car =>
+        (car.status || "").toLowerCase() === "available"
+      );
+
+      if (availableCars.length === 0) {
+        statusMessage.textContent = "No available vehicles found.";
+        container.className = "";
+        container.innerHTML = `
+          <div class="empty">
+            No vehicles are currently marked as Available in the spreadsheet.
+          </div>
+        `;
+        return;
+      }
+
+      statusMessage.textContent = `${availableCars.length} vehicle(s) available`;
+
+      container.className = "inventory-grid";
+      container.innerHTML = availableCars.map(car => {
+        const stock = encodeURIComponent(car.stock || "");
+        const title = `${car.year || ""} ${car.make || ""} ${car.model || ""} ${car.trim || ""}`.trim();
+        const image = car.photo1 || "https://via.placeholder.com/800x500?text=No+Photo";
+
+        return `
+          <article class="car-card">
+            <img src="${image}" alt="${title}">
+            <div class="car-body">
+              <h3 class="car-title">${title}</h3>
+              <p class="car-meta">${formatMileage(car.mileage || "")}</p>
+              <p class="car-meta">Stock #: ${car.stock || "N/A"}</p>
+              <div class="price">${formatPrice(car.price || "")}</div>
+              <div class="btn-row">
+                <a class="btn btn-primary" href="vehicle.html?stock=${stock}">View Details</a>
+                <a class="btn btn-secondary" href="tel:19565551234">Call Dealer</a>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    async function loadInventory() {
+      const statusMessage = document.getElementById("statusMessage");
+      const container = document.getElementById("inventoryContainer");
+
+      if (!SHEET_CSV_URL || SHEET_CSV_URL.includes("PASTE_YOUR_GOOGLE_SHEET_CSV_URL_HERE")) {
+        statusMessage.textContent = "Spreadsheet URL not configured yet.";
+        container.className = "";
+        container.innerHTML = `
+          <div class="error">
+            Edit <strong>inventory.html</strong> and replace
+            <strong>PASTE_YOUR_GOOGLE_SHEET_CSV_URL_HERE</strong> with your published Google Sheets CSV link.
+          </div>
+        `;
+        return;
+      }
+
+      try {
+        const response = await fetch(SHEET_CSV_URL, { cache: "no-store" });
+
+        if (!response.ok) {
+          throw new Error("HTTP " + response.status);
+        }
+
+        const csvText = await response.text();
+        const cars = csvToObjects(csvText);
+        renderInventory(cars);
+      } catch (error) {
+        statusMessage.textContent = "Could not load inventory.";
+        container.className = "";
+        container.innerHTML = `
+          <div class="error">
+            Failed to load the spreadsheet data.<br><br>
+            Check that:
+            <ul>
+              <li>the Google Sheet is published to the web,</li>
+              <li>the CSV link is correct, and</li>
+              <li>the spreadsheet headers match the expected column names.</li>
+            </ul>
+            <strong>Error:</strong> ${error.message}
+          </div>
+        `;
+      }
+    }
+
+    loadInventory();
+  </script>
+</body>
+</html>
