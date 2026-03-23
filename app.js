@@ -306,3 +306,20 @@ function applyCommonText() {
   const footer = document.getElementById("siteFooterText");
   if (footer) footer.textContent = t("inventoryFooter");
 }
+
+function safeImage(url) {
+  const fallback = "images/oopsIE.png";
+
+  if (!url || url.trim() === "") {
+    return fallback;
+  }
+
+  return escapeHtml(url);
+}
+
+function handleImageError(img) {
+  if (img.dataset.fallbackApplied) return;
+
+  img.dataset.fallbackApplied = "true";
+  img.src = "images/oopsIE.png";
+}
