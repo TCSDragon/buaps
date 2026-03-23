@@ -9,39 +9,42 @@
 <body>
   <header>
     <h1>BUAPS Auto Sales</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="inventory.html">Inventory</a>
-      <a href="contact.html">Contact</a>
-    </nav>
+    <div class="top-actions">
+      <nav>
+        <a href="index.html" data-i18n="navHome">Home</a>
+        <a href="inventory.html" data-i18n="navInventory">Inventory</a>
+        <a href="contact.html" data-i18n="navContact">Contact</a>
+      </nav>
+      <button id="languageToggle" class="lang-toggle" type="button">Español</button>
+    </div>
   </header>
 
   <section class="hero">
-    <h2>Contact Us</h2>
-    <p>We’re here to help you find the right vehicle</p>
+    <h2 data-i18n="contactTitle">Contact Us</h2>
+    <p data-i18n="contactSubtitle">We’re here to help you find the right vehicle</p>
   </section>
 
   <main class="container">
     <div class="contact-grid">
       <section class="card">
-        <h3>Dealership Information</h3>
+        <h3 data-i18n="dealershipInformation">Dealership Information</h3>
 
         <div class="info-row">
-          <span class="info-label">Phone</span>
+          <span class="info-label" data-i18n="phone">Phone</span>
           <div class="info-value">
             <a href="tel:19565551234">(956) 555-1234</a>
           </div>
         </div>
 
         <div class="info-row">
-          <span class="info-label">Email</span>
+          <span class="info-label" data-i18n="email">Email</span>
           <div class="info-value">
             <a href="mailto:sales@example.com">sales@example.com</a>
           </div>
         </div>
 
         <div class="info-row">
-          <span class="info-label">Address</span>
+          <span class="info-label" data-i18n="address">Address</span>
           <div class="info-value">
             123 Main Street<br />
             McAllen, TX 78501
@@ -49,7 +52,7 @@
         </div>
 
         <div class="info-row">
-          <span class="info-label">Business Hours</span>
+          <span class="info-label" data-i18n="businessHours">Business Hours</span>
           <div class="info-value">
             Monday – Friday: 9:00 AM – 6:00 PM<br />
             Saturday: 10:00 AM – 4:00 PM<br />
@@ -58,39 +61,39 @@
         </div>
 
         <div class="quick-actions">
-          <a class="btn btn-primary" href="tel:19565551234">Call Now</a>
-          <a class="btn btn-secondary" href="mailto:sales@example.com">Email Us</a>
+          <a class="btn btn-primary" href="tel:19565551234" data-i18n="callNow">Call Now</a>
+          <a class="btn btn-secondary" href="mailto:sales@example.com" data-i18n="emailUs">Email Us</a>
         </div>
       </section>
 
       <section class="card">
-        <h3>Send Us a Message</h3>
+        <h3 data-i18n="sendUsMessage">Send Us a Message</h3>
 
         <form action="mailto:sales@example.com" method="post" enctype="text/plain">
           <label>
-            Name
-            <input type="text" name="name" placeholder="Your name" required />
+            <span data-i18n="name">Name</span>
+            <input type="text" name="name" data-i18n-placeholder="yourName" placeholder="Your name" required />
           </label>
 
           <label>
-            Email
-            <input type="email" name="email" placeholder="you@example.com" required />
+            <span data-i18n="email">Email</span>
+            <input type="email" name="email" data-i18n-placeholder="yourEmail" placeholder="you@example.com" required />
           </label>
 
           <label>
-            Phone
-            <input type="tel" name="phone" placeholder="(555) 555-5555" />
+            <span data-i18n="phone">Phone</span>
+            <input type="tel" name="phone" data-i18n-placeholder="yourPhone" placeholder="(555) 555-5555" />
           </label>
 
           <label>
-            Message
-            <textarea name="message" placeholder="How can we help you?" required></textarea>
+            <span data-i18n="message">Message</span>
+            <textarea name="message" data-i18n-placeholder="howCanWeHelp" placeholder="How can we help you?" required></textarea>
           </label>
 
-          <button class="btn btn-primary" type="submit">Send Message</button>
+          <button class="btn btn-primary" type="submit" data-i18n="sendMessage">Send Message</button>
         </form>
 
-        <p class="form-note">
+        <p class="form-note" data-i18n="formNote">
           This simple form opens your email app to send the message. Later, you can replace it
           with a hosted contact form service if you want messages submitted directly from the website.
         </p>
@@ -108,7 +111,13 @@
   </main>
 
   <footer>
-    <p>© 2026 BUAPS Auto Sales | McAllen, TX</p>
+    <p id="siteFooterText">© 2026 BUAPS Auto Sales | McAllen, TX</p>
   </footer>
+
+  <script src="app.js"></script>
+  <script>
+    setupLanguageToggle();
+    applyCommonText();
+  </script>
 </body>
 </html>
