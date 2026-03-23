@@ -513,3 +513,22 @@ footer {
     grid-template-columns: repeat(3, 1fr);
   }
 }
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.lang-toggle {
+  background: #ffffff;
+  color: #111111;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.lang-toggle:hover {
+  opacity: 0.95;
+}
