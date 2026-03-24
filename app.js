@@ -335,14 +335,14 @@ function safeImage(url) {
   }
 
   // Local paths (keep as-is)
-  if (
-    cleanUrl.startsWith("images/") ||
-    cleanUrl.startsWith("./") ||
-    cleanUrl.startsWith("../") ||
-    cleanUrl.startsWith("/")
-  ) {
-    return cleanUrl;
-  }
+  //if (
+  //  cleanUrl.startsWith("images/") ||
+  //  cleanUrl.startsWith("./") ||
+  //  cleanUrl.startsWith("../") ||
+  //  cleanUrl.startsWith("/")
+  //) {
+  //  return cleanUrl;
+ // }
 
   // Already HTTPS
   if (/^https:\/\//i.test(cleanUrl)) {
