@@ -74,7 +74,7 @@ const SITE_TEXT = {
     returnToInventory: "Please return to Inventory.",
     askAboutSubject: stock => `Question about stock #${stock}`,
     moreInfoVehicle: "Contact us for more information about this vehicle.",
-    inventoryFooter: "© 2026 BUAPS Auto Sales | McAllen, TX",
+    inventoryFooter: "© 2026 Border Used Autos | McAllen, TX",
     languageLabel: "Español"
   },
   es: {
@@ -150,7 +150,7 @@ const SITE_TEXT = {
     returnToInventory: "Regrese al inventario.",
     askAboutSubject: stock => `Pregunta sobre inventario #${stock}`,
     moreInfoVehicle: "Contáctenos para más información sobre este vehículo.",
-    inventoryFooter: "© 2026 BUAPS Auto Sales | McAllen, TX",
+    inventoryFooter: "© 2026 Border Used Autos | McAllen, TX",
     languageLabel: "English"
   }
 };
