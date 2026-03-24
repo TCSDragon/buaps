@@ -64,7 +64,7 @@
           <section>
             <div class="main-panel">
               <div class="main-image-wrap">
-                <img id="mainVehicleImage" class="main-image" src="${escapeHtml(mainPhoto)}" alt="${escapeHtml(title)}">
+                <img id="mainVehicleImage" class="main-image" src="${safeImage(mainPhoto)}" alt="${escapeHtml(title)}" onerror="this.onerror=null; this.src='images/oopsIE.png';">
               </div>
 
               ${photos.length > 1 ? `
