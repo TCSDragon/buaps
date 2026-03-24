@@ -57,7 +57,7 @@
 
         return `
           <article class="car-card">
-            <img src="${escapeHtml(image)}" alt="${escapeHtml(title)}">
+            <img src="${safeImage(image)}" alt="${escapeHtml(title)}" onerror="this.onerror=null; this.src='images/oopsIE.png';">
             <div class="car-body">
               <h3 class="car-title">${escapeHtml(title)}</h3>
               <p class="car-meta">${escapeHtml(formatMileage(car.mileage || ""))}</p>
