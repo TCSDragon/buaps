@@ -309,7 +309,6 @@ function applyCommonText() {
 
 function safeImage(url) {
   const fallback = "images/oopsIE.png";
-  const fallback2 = "images/oopsIE2.png";
 
   if (!url || typeof url !== "string") {
     return fallback;
@@ -332,25 +331,6 @@ function safeImage(url) {
   // Force HTTP to HTTPS for normal web URLs
   if (/^http:\/\//i.test(cleanUrl)) {
     cleanUrl = cleanUrl.replace(/^http:\/\//i, "https://");
-  }
-
-  // Handle Google Drive links
-  try {
-    const drivePatterns = [
-      /https?:\/\/drive\.google\.com\/file\/d\/([^/]+)\//i,
-      /https?:\/\/drive\.google\.com\/open\?id=([^&]+)/i,
-      /https?:\/\/drive\.google\.com\/uc\?(?:.*&)?id=([^&]+)/i,
-      /https?:\/\/docs\.google\.com\/uc\?(?:.*&)?id=([^&]+)/i
-    ];
-
-    for (const pattern of drivePatterns) {
-      const match = cleanUrl.match(pattern);
-      if (match && match[1]) {
-        return `https://drive.google.com/uc?export=view&id=${match[1]}`;
-      }
-    }
-  } catch (e) {
-    return fallback2;
   }
 
   // Allow local images and normal HTTPS URLs
