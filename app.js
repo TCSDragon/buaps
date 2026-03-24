@@ -309,6 +309,7 @@ function applyCommonText() {
 
 function safeImage(url) {
   const fallback = "images/oopsIE.png";
+  const baseImagePath = "https://images.borderusedautos.com/images/";
 
   if (!url || typeof url !== "string") {
     return fallback;
@@ -328,12 +329,12 @@ function safeImage(url) {
     cleanUrl = "https:" + cleanUrl;
   }
 
-  // Force HTTP to HTTPS for normal web URLs
+  // Force HTTP to HTTPS
   if (/^http:\/\//i.test(cleanUrl)) {
     cleanUrl = cleanUrl.replace(/^http:\/\//i, "https://");
   }
 
-  // Allow local images and normal HTTPS URLs
+  // Local paths (keep as-is)
   if (
     cleanUrl.startsWith("images/") ||
     cleanUrl.startsWith("./") ||
@@ -343,11 +344,13 @@ function safeImage(url) {
     return cleanUrl;
   }
 
+  // Already HTTPS
   if (/^https:\/\//i.test(cleanUrl)) {
     return cleanUrl;
   }
 
-  return fallback;
+  // treat anything else as filename or relative path
+  return baseImagePath + cleanUrl.replace(/^\.?\/*/, "");
 }
 
 function handleImageError(img) {
