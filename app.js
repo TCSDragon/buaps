@@ -310,11 +310,63 @@ function applyCommonText() {
 function safeImage(url) {
   const fallback = "images/oopsIE.png";
 
-  if (!url || url.trim() === "") {
+  if (!url || typeof url !== "string") {
     return fallback;
   }
 
-  return escapeHtml(url);
+  let cleanUrl = url.trim();
+
+  if (!cleanUrl) {
+    return fallback;
+  }
+
+  // Convert backslashes to forward slashes
+  cleanUrl = cleanUrl.replace(/\\/g, "/");
+
+  // If protocol-relative URL, force HTTPS
+  if (cleanUrl.startsWith("//")) {
+    cleanUrl = "https:" + cleanUrl;
+  }
+
+  // Force HTTP to HTTPS for normal web URLs
+  if (/^http:\/\//i.test(cleanUrl)) {
+    cleanUrl = cleanUrl.replace(/^http:\/\//i, "https://");
+  }
+
+  // Handle Google Drive links
+  try {
+    const drivePatterns = [
+      /https?:\/\/drive\.google\.com\/file\/d\/([^/]+)\//i,
+      /https?:\/\/drive\.google\.com\/open\?id=([^&]+)/i,
+      /https?:\/\/drive\.google\.com\/uc\?(?:.*&)?id=([^&]+)/i,
+      /https?:\/\/docs\.google\.com\/uc\?(?:.*&)?id=([^&]+)/i
+    ];
+
+    for (const pattern of drivePatterns) {
+      const match = cleanUrl.match(pattern);
+      if (match && match[1]) {
+        return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+      }
+    }
+  } catch (e) {
+    return fallback;
+  }
+
+  // Allow local images and normal HTTPS URLs
+  if (
+    cleanUrl.startsWith("images/") ||
+    cleanUrl.startsWith("./") ||
+    cleanUrl.startsWith("../") ||
+    cleanUrl.startsWith("/")
+  ) {
+    return cleanUrl;
+  }
+
+  if (/^https:\/\//i.test(cleanUrl)) {
+    return cleanUrl;
+  }
+
+  return fallback;
 }
 
 function handleImageError(img) {
