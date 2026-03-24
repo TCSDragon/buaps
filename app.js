@@ -309,6 +309,7 @@ function applyCommonText() {
 
 function safeImage(url) {
   const fallback = "images/oopsIE.png";
+  const fallback2 = "images/oopsIE2.png";
 
   if (!url || typeof url !== "string") {
     return fallback;
@@ -349,7 +350,7 @@ function safeImage(url) {
       }
     }
   } catch (e) {
-    return fallback;
+    return fallback2;
   }
 
   // Allow local images and normal HTTPS URLs
