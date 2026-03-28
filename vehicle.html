@@ -71,7 +71,7 @@
                 <div class="thumb-grid">
                   ${photos.map((photo, index) => `
                     <button class="thumb ${index === 0 ? "active" : ""}" data-photo="${safeImage(photo)}" type="button">
-                      <img id="mainVehicleImage" class="main-image" src="${safeImage(photo)}" alt="Vehicle photo ${index + 1} alt2="$photo" onerror="this.onerror=null; this.src='images/oopsIE.png';">
+                      <img id="mainVehicleImage" class="main-image" src="${safeImage(photo)}" alt="Vehicle photo ${index + 1} alt2="${photo}" onerror="this.onerror=null; this.src='images/oopsIE.png';">
                     </button>
                   `).join("")}
                 </div>
