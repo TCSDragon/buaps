@@ -1,4 +1,4 @@
-const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVjMR24cnpLKfIc-7bEV5tyBjNKY8zmr8ONxEj1C4RhMFzvcMWNQorZ2uwSSNnpxQ9akTWGKeA7_8V/pub?gid=0&single=true&output=csv";
+const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRt6G5mWeciGzzHmut-zMiiihB59U33X4XUoDa-ujYmF_wkvrG_Tkr7WX8qPcnSSiHk_ZQuV802PIsC/pub?gid=0&single=true&output=csv";
 
 const SITE_TEXT = {
   en: {
