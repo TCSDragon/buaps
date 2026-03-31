@@ -110,7 +110,7 @@ const SITE_TEXT = {
     checkStockExists: "el número de inventario exista en la hoja de cálculo.",
     availableCount: count => `${count} vehículo(s) disponible(s)`,
     featuredHeroTitle: "Autos usados de calidad a excelentes precios",
-    featuredHeroSubtitle: "Explore nuestro inventario y encuentre su próximo vehículo hoy",
+    featuredHeroSubtitle: "Explore nuestro inventario. Presupuestos Sin Compromiso, Llamanos!!!",
     inventoryButton: "Ver inventario",
     ctaTitle: "¿Tiene preguntas? Llámenos hoy",
     mileageUnavailable: "Millaje no disponible",
