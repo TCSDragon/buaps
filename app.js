@@ -242,7 +242,9 @@ async function fetchCars() {
 
 function formatPrice(value) {
   const number = Number(String(value).replace(/[^0-9.-]/g, ""));
-  if (Number.isNaN(number)) return t("callForPrice");
+  if (Number.isNaN(number) || number <= 0) {
+    return t("callForPrice");
+  }
   return "$" + number.toLocaleString();
 }
 
