@@ -136,15 +136,7 @@ nav a:hover {
 
 /* Overlay stays the same */
 .hero-image::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    90deg,
-    rgba(198, 58, 36, 0.72) 0%,
-    rgba(227, 90, 31, 0.58) 55%,
-    rgba(247, 232, 11, 0.38) 100%
-  );
+  display: none;
 }
 
 /* Text container behavior */
