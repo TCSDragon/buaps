@@ -150,7 +150,9 @@ nav a:hover {
 @media (min-width: 768px) {
   .hero-image {
     justify-content: flex-start;
-    padding-left: calc(50% + 100px);
+    align-items: center;
+    padding-left: calc(50% + 100px); /* horizontal shift right */
+    padding-top: 40px;
   }
 }
 
