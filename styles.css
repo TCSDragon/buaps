@@ -164,10 +164,16 @@ nav a:hover {
 /* Mobile behavior */
 @media (max-width: 767px) {
   .hero-image {
-    background-position: left center;
+    background-size: contain;        /* key change */
+    background-position: center top; /* show top of image */
+    background-repeat: no-repeat;
+
+    background-color: #4a1f16;       /* fills empty space nicely */
+
     justify-content: center;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding: 60px 20px;
+
+    min-height: 300px;               /* prevents oversized banner feel */
   }
 }
 
