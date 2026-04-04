@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Towing | Border Used Auto Parts and Sales</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>BUAPS Auto Sales</h1>
+    <div class="top-actions">
+      <nav>
+        <a href="index.html" data-i18n="navHome">Home</a>
+        <a href="inventory.html" data-i18n="navInventory">Inventory</a>
+        <a href="towing.html" data-i18n="navTowing">Towing</a>
+        <a href="contact.html" data-i18n="navContact">Contact</a>
+      </nav>
+      <button id="languageToggle" class="lang-toggle" type="button">Español</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h2 data-i18n="towingTitle">Towing Services</h2>
+    <p data-i18n="towingSubtitle">Fast, reliable towing when you need it most</p>
+  </section>
+
+  <main class="container">
+    <div class="card" style="text-align:center;">
+      <img 
+        src="images/tow_service_banner.png" 
+        alt="Towing Service"
+        style="max-width:100%; height:auto; border-radius:12px;"
+      >
+    </div>
+  </main>
+
+  <footer>
+    <p id="siteFooterText">© 2026 Border Used Auto Parts and Sales | McAllen, TX</p>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+    setupLanguageToggle();
+    applyCommonText();
+  </script>
+</body>
+</html>
