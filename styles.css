@@ -126,8 +126,14 @@ nav a:hover {
   background-repeat: no-repeat;
   padding: 80px 20px;
   position: relative;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
+/* Overlay stays the same */
 .hero-image::before {
   content: "";
   position: absolute;
@@ -140,9 +146,28 @@ nav a:hover {
   );
 }
 
+/* Text container behavior */
 .hero-image > * {
   position: relative;
   z-index: 1;
+}
+
+/* Desktop adjustment (shift right) */
+@media (min-width: 768px) {
+  .hero-image {
+    justify-content: flex-start;
+    padding-left: calc(50% + 100px);
+  }
+}
+
+/* Mobile behavior */
+@media (max-width: 767px) {
+  .hero-image {
+    background-position: left center;
+    justify-content: center;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 }
 
 .container {
