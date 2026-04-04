@@ -6,7 +6,7 @@ const SITE_TEXT = {
     navInventory: "Inventory",
     navContact: "Contact",
     navTowing: "Towing",
-    towingTitle: "Towing Services",
+    towingTitle: "Towing & Recovery Services",
     towingSubtitle: "Fast, reliable towing when you need it most",
     callNow: "Call Now",
     callDealer: "Call Dealer",
